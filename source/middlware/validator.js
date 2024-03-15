@@ -3,12 +3,7 @@ const bodyvalidator=(schema)=>{
        //you need to use multer
         try{
             const data=req.body
-            console.log(data)
-           res.json({
-            result:data,
-            message:"this is data",
-            meta:null
-           })
+        
             next()
         }
         catch(exception){

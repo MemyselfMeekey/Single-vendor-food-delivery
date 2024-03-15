@@ -6,7 +6,8 @@ const { pathSet,uploader } = require('../../middlware/imageupload')
 
 
 router.post("/registration",pathSet("/uploads/images"),uploader.single("image"),bodyvalidator(regSchema),authCtrl.registration)
-router.get("/verification",authCtrl.verification)
+router.get("/verification/:token",authCtrl.verificationToken)
+router.get("/resendverification/:token",authCtrl.resendActivationToken)
 router.get("/activation",authCtrl.activation)
 
 router.post("/login",authCtrl.login)

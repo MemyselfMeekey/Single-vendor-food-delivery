@@ -1,7 +1,8 @@
 const {genRanStr}=require("../../configuration/randomstring.generator")
+const UserModel = require("../../database/db.mongoose")
 const Mailing = require("../../services/mailing")
 class services{
-    transformRegisterata=(data)=>{
+    transformRegisterData=(data)=>{
         try{
             data.status="inactive"
             const token=genRanStr()
@@ -42,6 +43,15 @@ class services{
         }
         catch(exception){
             console.log("This is in authservices sendRegEmail",exception)
+            throw exception
+        }
+    }
+    userStore=async(data)=>{
+        try{
+            const user=new UserModel(data)
+            return await user.save()
+        }
+        catch(exception){
             throw exception
         }
     }
