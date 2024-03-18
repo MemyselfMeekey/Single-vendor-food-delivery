@@ -1,5 +1,6 @@
 const {genRanStr}=require("../../configuration/randomstring.generator")
 const UserModel = require("../../database/db.mongoose")
+const AppError = require("../../exception/error.app")
 const Mailing = require("../../services/mailing")
 class services{
     transformRegisterData=(data)=>{
@@ -11,6 +12,7 @@ class services{
 
             date.setHours(date.getHours()+3)
             data.expiryDate=date
+            
             return data
         }
         catch(exception){
@@ -28,7 +30,7 @@ class services{
                 subject:"About activation",
                 html:`
                 Dear <b>${user.name}</b>, <br>
-                <p>Your account has been registered successfully. Please click the link below to activate your account or copy paste the url</p>
+                <p>Your account has been registered successfully. Please click the link below to activate your account or copy paste the url.Your activation token is ${user.activationToken}</p>
                 <a href="${process.env.FRONTEND_URL}activate/${user.activationToken}">${process.env.FRONTEND_URL}</a><br>
                 <h1>Donot reply to this email</h1>
                 <b>Best Regards</b>
@@ -49,7 +51,31 @@ class services{
     userStore=async(data)=>{
         try{
             const user=new UserModel(data)
+        
             return await user.save()
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+    getSingleUserByFilter=async(filter)=>{
+        try{
+            const user=await UserModel.findOne(filter)
+            return user
+        }   
+        catch(exception){
+            throw exception
+        }
+    }
+    updateUser=async(id,data)=>{
+        try{
+            const update=await UserModel.findByIdAndUpdate(id,{
+                $set:data
+            })
+            if(!update){
+                throw new AppError({message:"User doesnot exist"})
+            }
+            return update
         }
         catch(exception){
             throw exception

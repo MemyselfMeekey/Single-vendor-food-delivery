@@ -1,5 +1,5 @@
 //this is used basically to generate a random string so that it can be exceptional in case any of the name or directory match
-const genRanStr=(len=100)=>{
+const genRanStr=(len=101)=>{
     const chars="0123456789_-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     const length=chars.length
     let randomStr=""

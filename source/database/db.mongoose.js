@@ -25,7 +25,7 @@ const UserDataSchema=new mongoose.Schema({
         default:'customer'
     },
     password:String,
-    activateToken:String,
+    activationToken:String,
     expiryDate:Date,
     status:{
         type:String,

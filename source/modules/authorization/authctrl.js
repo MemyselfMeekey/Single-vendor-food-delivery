@@ -1,22 +1,28 @@
 require("dotenv").config()
 const services = require("./services.db")
 const AppError=require("../../exception/error.app")
+const { genRanStr } = require("../../configuration/randomstring.generator")
 
 class AuthorizationControl{
     registration=async(req,res,next)=>{
       try{
         const data=services.transformRegisterData(req.body)
+      //  console.log(data.activationToken)
+        const  user=await services.userStore(data)
        
-        const user=await services.userStore(data)
-        
+       
         if(user){
           const myEvent=req.myEvent
-          
-          myEvent.emit('sendRegMail',user)//make a new folder named events and add the event listener there
+          myEvent.emit('sendRegisterMail',user)//make a new folder named events and add the event listener there
         }
         else{
           throw AppError({message:"this couldnot be executed in registration"})
         }
+        res.json({
+          result:user,
+          message:"Use the activation token to activate your account",
+          meta:null
+        })
       }
       catch(exception){
         console.log(exception)
@@ -24,12 +30,31 @@ class AuthorizationControl{
       }
         
     }
-    verificationToken=(req,res,next)=>{
+    verificationToken=async(req,res,next)=>{
       try{
         const token=req.params.token
         if(token.length<100){
           throw new AppError({message:"Invalid Token"})
         }
+       
+        const user=await services.getSingleUserByFilter({
+          activationToken:token
+
+        })
+       
+        if(!user){
+          throw new AppError({message:"Token doesnot exist anymore"})
+        }
+        const today=new Date().getTime()
+        const tokenExpiryDate=new Date(user.expiryDate).getTime
+        if(today>tokenExpiryDate){
+          throw new AppError({message:"Token is expired "})
+        }
+        res.json({
+          result:user,
+          message:"You are verified",
+          meta:null
+        })
       }
       catch(exception){
         console.log("exception in verification of authctrl",exception)
@@ -37,12 +62,36 @@ class AuthorizationControl{
       }
     }
     
-    resendActivationToken=(req,res,next)=>{
+    resendActivationToken=async(req,res,next)=>{
       try{
+          const email=req.body.email
+          const user=await services.getSingleUserByFilter({
+            email:email,
 
-      }
+          })
+          if(!user){
+            throw new AppError  ({message:"User has not been registered yet "})
+          }
+          const token=genRanStr()
+          const expiryDate=new Date()
+          expiryDate.setHours(expiryDate.getHours()+2)
+          await services.updateUser(user._id,{
+            activationToken:token,
+            expiryDate:expiryDate
+          })
+          const myEvent=req.myEvent
+          myEvent.emit('sendRegisterMail',{name:user.name,email:user.email,activationToken:token})
+          res.json({
+            result:{
+              activationToken:token,
+              expiryDate:expiryDate
+            },
+            message:"This is updated",
+            meta:null
+          })
+      } 
       catch(exception){
-        console.log("eception in authroirzation control",exception)
+        console.log("exeption in authroirzation control",exception)
         next(exception)
       }
     }
