@@ -1,6 +1,7 @@
 require("dotenv").config()
 const services = require("./services.db")
 const AppError=require("../../exception/error.app")
+const bcrypt=require("bcrypt")
 const { genRanStr } = require("../../configuration/randomstring.generator")
 
 class AuthorizationControl{
@@ -95,9 +96,33 @@ class AuthorizationControl{
         next(exception)
       }
     }
-    activation=(req,res,next)=>{
+    activation=async(req,res,next)=>{
       try{
-
+          const token=req.params.token
+          const user=await services.getSingleUserByFilter({
+            activationToken:token
+          })
+          if(!user){
+            throw new AppError({message:"Invalid token"})
+          }
+          const today=new Date().getTime()
+          const expiryDate=new Date(user.expiryDate).getTime()
+          if(today>expiryDate){
+            throw new AppError({message:"Token has already been expired"})
+          }
+          const hash=bcrypt.hashSync(req.body.password,10)
+          const updateBody={
+            password:hash,
+            activationToken:null,
+            expiryDate:null,
+            status:"active"
+          }
+          const update=await services.updateUser(user._id,updateBody)
+          res.json({
+            result:null,
+            message:"Your account has been successfully activated",
+            meta:null
+          })
       }
       catch(exception){
         console.log("eception in authroirzation control",exception)
