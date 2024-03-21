@@ -1,7 +1,7 @@
 const router=require('express').Router()//routing middleware 
 const authCtrl=require("../authorization/authctrl")
 const bodyvalidator=require("../../middlware/validator")
-const { regSchema,passwordSetSchema,emailSchema,resendToken}=require("../authorization/auth.require")
+const { regSchema,passwordSetSchema,emailSchema,resendToken, loginDto}=require("../authorization/auth.require")
 const { pathSet,uploader } = require('../../middlware/imageupload')
 
 
@@ -10,7 +10,8 @@ router.get("/verification/:token",authCtrl.verificationToken)
 router.post("/resendverification",bodyvalidator(resendToken),authCtrl.resendActivationToken)
 router.get("/activation/:token",bodyvalidator(passwordSetSchema),authCtrl.activation)
 
-router.post("/login",authCtrl.login)
+router.post("/login",bodyvalidator(loginDto),authCtrl.login)
+router.post("/verify-otp",authCtrl.verifyOtp)
 router.get("/dashboard",authCtrl.dashboard)
 router.post("/change-pass",authCtrl.changepass)
 

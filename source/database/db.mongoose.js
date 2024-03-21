@@ -36,6 +36,10 @@ const UserDataSchema=new mongoose.Schema({
         deliveryAdd:AddStructure,
         deliveredAdd:AddStructure
     },
+    otp:{
+        type:String,
+        default:null
+    },
     createdBy:{
         type:mongoose.Types.ObjectId,
         ref:"FoodDeliveryUser",

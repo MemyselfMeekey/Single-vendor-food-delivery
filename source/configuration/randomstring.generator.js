@@ -9,4 +9,14 @@ const genRanStr=(len=101)=>{
     }
     return randomStr
 }
-module.exports={genRanStr}
+const genRanOtp=(len=5)=>{
+    const chars="0123456789"
+    const length=chars.length
+    let randomStr=""
+    for(let i=1;i<len;i++){
+        const position=Math.ceil(Math.random()*(length-1))
+        randomStr+=chars[position]
+    }
+    return randomStr
+}
+module.exports={genRanStr,genRanOtp}
