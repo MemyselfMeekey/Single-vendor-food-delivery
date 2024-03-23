@@ -3,6 +3,7 @@ const services = require("./services.db")
 const AppError = require("../../exception/error.app")
 const bcrypt = require("bcrypt")
 const { genRanStr, genRanOtp } = require("../../configuration/randomstring.generator")
+const myEvent = require("../../eventlistener/myevent.listener")
 
 class AuthorizationControl {
   registration = async (req, res, next) => {
@@ -159,8 +160,10 @@ class AuthorizationControl {
       // }
 
       const otp = genRanOtp()
-      await services.updateUser(userDetail._id,{otp:otp})
-      
+      const userWotp=await services.updateUser(userDetail._id,{otp:otp})
+      //sending otp to mail
+      const myEvent=req.myEvent
+      myEvent.emit('sendOtpMail',userWotp)
       res.json({
         result: {
           userDetail,

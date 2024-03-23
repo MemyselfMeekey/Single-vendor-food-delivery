@@ -1,3 +1,4 @@
+const Mail = require("nodemailer/lib/mailer")
 const {genRanStr}=require("../../configuration/randomstring.generator")
 const UserModel = require("../../database/db.mongoose")
 const AppError = require("../../exception/error.app")
@@ -45,6 +46,19 @@ class services{
         }
         catch(exception){
             console.log("This is in authservices sendRegEmail",exception)
+            throw exception
+        }
+    }
+    sendOtp=async(user)=>{
+        try{
+            await Mailing.sendEmail({
+                to: user.email,
+                subject:"Otp for logging in",
+                html:`Your otp is ${user.otp}`
+            })
+        }
+        catch(exception){
+            console.log("This is an error in sendOtp services",exception)
             throw exception
         }
     }
