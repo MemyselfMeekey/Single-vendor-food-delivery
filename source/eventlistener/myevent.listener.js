@@ -5,7 +5,10 @@ const sendOtp=new EventEmitter()
 myEvent.addListener("sendRegisterMail",async(data)=>{
     await services.sendRegEmail(data)
 })
-sendOtp.addListener("sendOtpMail",async(data)=>{
-    await services.sendOtp(data)
+sendOtp.addListener("sendOtpMail",async(email,otp)=>{
+    await services.sendOtp(email,otp)
 })
-module.exports=myEvent
+module.exports={
+    myEvent,
+    sendOtp
+}

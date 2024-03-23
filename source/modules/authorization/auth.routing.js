@@ -3,6 +3,7 @@ const authCtrl=require("../authorization/authctrl")
 const bodyvalidator=require("../../middlware/validator")
 const { regSchema,passwordSetSchema,emailSchema,resendToken, loginDto}=require("../authorization/auth.require")
 const { pathSet,uploader } = require('../../middlware/imageupload')
+const loginCheck = require('../../middlware/loginCheck.midd')
 
 
 router.post("/registration",pathSet("/uploads/images"),uploader.single("image"),bodyvalidator(regSchema),authCtrl.registration)
@@ -12,8 +13,8 @@ router.get("/activation/:token",bodyvalidator(passwordSetSchema),authCtrl.activa
 
 router.post("/login",bodyvalidator(loginDto),authCtrl.login)
 router.post("/verify-otp",authCtrl.verifyOtp)
-router.get("/dashboard",authCtrl.dashboard)
-router.post("/change-pass",authCtrl.changepass)
+router.get("/dashboard",loginCheck,authCtrl.dashboard)
+router.post("/change-pass",loginCheck,authCtrl.changepass)
 
 router.post("/forgetpass",authCtrl.frogetpass)
 router.post("/forgetpass/:token/verification",authCtrl.frogetpasstokenverify)

@@ -49,12 +49,13 @@ class services{
             throw exception
         }
     }
-    sendOtp=async(user)=>{
+    sendOtp=async({email,otp})=>{
         try{
             await Mailing.sendEmail({
-                to: user.email,
+                to:email,
                 subject:"Otp for logging in",
-                html:`Your otp is ${user.otp}`
+                html:`Your otp is ${otp}`,
+                text:`Dear ${email},\n <p>Please verify the otp given below</p><br><h1>Otp</Otp>${otp}`
             })
         }
         catch(exception){

@@ -1,9 +1,10 @@
 require("dotenv").config()
 const services = require("./services.db")
+const { myEvent, sendOtp } = require("../../eventlistener/myevent.listener")
 const AppError = require("../../exception/error.app")
 const bcrypt = require("bcrypt")
 const { genRanStr, genRanOtp } = require("../../configuration/randomstring.generator")
-const myEvent = require("../../eventlistener/myevent.listener")
+const jwt = require("jsonwebtoken")
 
 class AuthorizationControl {
   registration = async (req, res, next) => {
@@ -14,7 +15,6 @@ class AuthorizationControl {
 
 
       if (user) {
-        const myEvent = req.myEvent
         myEvent.emit('sendRegisterMail', user)//make a new folder named events and add the event listener there
       }
       else {
@@ -155,49 +155,66 @@ class AuthorizationControl {
       if (userDetail.status !== "active") {
         throw new AppError({ message: "user has not been activated", code: 400 })
       }
-      // if(userDetail.otp!=="otp"){
-      //   throw new AppError({message:"Your otp is wrong",code:400})
-      // }
 
       const otp = genRanOtp()
-      const userWotp=await services.updateUser(userDetail._id,{otp:otp})
+      const userWithotp = await services.updateUser(userDetail._id, { otp:otp})
       //sending otp to mail
-      const myEvent=req.myEvent
-      myEvent.emit('sendOtpMail',userWotp)
+      if (userWithotp) {
+        sendOtp.emit('sendOtpMail', {email:userDetail.email,otp:otp})
+        res.json({
+          result: {
+           otp:otp
+          },
+          message: "Please check your email for otp verification",
+          meta: null
+        })
+      }
+      else {
+        throw new AppError({ message: "OTP not sent in mail" })
+      }
+    }
+    catch (exception) {
+      console.log("exception in authroirzation control login", exception)
+      next(exception)
+    }
+  }
+  verifyOtp = async (req, res, next) => {
+    try {
+      const { email, otp } = req.body
+      const userDetail = await services.getSingleUserByFilter({
+        email: email
+      })
+      if (!userDetail) {
+        throw new AppError({ message: "Please type the otp to verify" })
+      }
+      if (otp !== userDetail.otp) {
+        throw new AppError({ message: "Wrong otp" })
+      }
+      await services.updateUser(userDetail._id, { otp: null })
+
+
+      // generating token
+      const accessToken=jwt.sign({
+        id:userDetail._id,
+      },process.env.JWT_SECRET,{
+        expiresIn:"4h"
+      })
+      const refreshToken=jwt.sign({
+        id:userDetail._id,
+        type:"refresh"
+      },process.env.JWT_SECRET,{
+        expiresIn:"1d"
+      })
       res.json({
         result: {
-          userDetail,
-          otp
+          accessToken:accessToken,
+          refreshToken:refreshToken
         },
-        message: "verify the otp",
+        message: "Otp verified successfully. You are logged in now",
         meta: null
       })
     }
     catch (exception) {
-      console.log("eception in authroirzation control", exception)
-      next(exception)
-    }
-  }
-  verifyOtp=async(req,res,next)=>{
-    try{
-      const {email,otp}=req.body
-      const userDetail=await services.getSingleUserByFilter({
-        email:email
-      })
-      if(!userDetail){
-        throw new AppError({message:"Please type the otp to verify"})
-      }
-      if(otp!==userDetail.otp){
-        throw new AppError({message:"Wrong otp"})
-      }
-      await services.updateUser(userDetail._id,{otp:null})
-      res.json({
-        result:userDetail,
-        message:"Otp verified successfully. You are logged in now",
-        meta:null
-      })
-    }
-    catch(exception){
       console.log(exception)
       next(exception)
     }
