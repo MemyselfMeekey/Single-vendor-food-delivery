@@ -1,7 +1,7 @@
 const router=require('express').Router()//routing middleware 
 const authCtrl=require("../authorization/authctrl")
 const bodyvalidator=require("../../middlware/validator")
-const { regSchema,passwordSetSchema,emailSchema,resendToken, loginDto}=require("../authorization/auth.require")
+const { regSchema,passwordSetSchema,resendToken, loginDto,passwordChangeSchema,forgetPass}=require("../authorization/auth.require")
 const { pathSet,uploader } = require('../../middlware/imageupload')
 const loginCheck = require('../../middlware/loginCheck.midd')
 
@@ -14,11 +14,12 @@ router.get("/activation/:token",bodyvalidator(passwordSetSchema),authCtrl.activa
 router.post("/login",bodyvalidator(loginDto),authCtrl.login)
 router.post("/verify-otp",authCtrl.verifyOtp)
 router.get("/dashboard",loginCheck,authCtrl.dashboard)
-router.post("/change-pass",loginCheck,authCtrl.changepass)
+router.post("/change-pass",loginCheck,bodyvalidator(passwordChangeSchema),authCtrl.changepass)
 
-router.post("/forgetpass",authCtrl.frogetpass)
+router.post("/forgetpass",bodyvalidator(forgetPass),authCtrl.forgetpass)
 router.post("/forgetpass/:token/verification",authCtrl.frogetpasstokenverify)
-router.post("/setpass/:token",authCtrl.setpasstoken)
+router.post("/setpass/:token",bodyvalidator(passwordSetSchema),authCtrl.setforgetPass)
+router.post('/logout',authCtrl.logOut)
 
 
 module.exports=router

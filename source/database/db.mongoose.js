@@ -27,6 +27,7 @@ const UserDataSchema=new mongoose.Schema({
     password:String,
     activationToken:String,
     expiryDate:Date,
+    forgetToken:String,
     status:{
         type:String,
         enum:['active','inactive'],
@@ -56,5 +57,19 @@ const UserDataSchema=new mongoose.Schema({
         autoIndex:true
     }
 )
+const PersonalAcessToken=new mongoose.Schema({
+    userId:{
+        type:mongoose.Types.ObjectId,
+        ref:"FoodDeliveryUser",
+        require:true
+    },
+    token:{
+        type:String,
+    },
+    refreshToken:{
+        type:String
+    }
+},{timestamps:true})
 const UserModel=mongoose.model("FoodDeliveryUser",UserDataSchema)
-module.exports=UserModel
+const PatModel=mongoose.model("FDpat",PersonalAcessToken)
+module.exports={UserModel,PatModel}

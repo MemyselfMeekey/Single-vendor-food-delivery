@@ -157,13 +157,13 @@ class AuthorizationControl {
       }
 
       const otp = genRanOtp()
-      const userWithotp = await services.updateUser(userDetail._id, { otp:otp})
+      const userWithotp = await services.updateUser(userDetail._id, { otp: otp })
       //sending otp to mail
       if (userWithotp) {
-        sendOtp.emit('sendOtpMail', {email:userDetail.email,otp:otp})
+        sendOtp.emit('sendOtpMail', { email: userDetail.email, otp: otp })
         res.json({
           result: {
-           otp:otp
+            otp: otp
           },
           message: "Please check your email for otp verification",
           meta: null
@@ -194,21 +194,21 @@ class AuthorizationControl {
 
 
       // generating token
-      const accessToken=jwt.sign({
-        id:userDetail._id,
-      },process.env.JWT_SECRET,{
-        expiresIn:"4h"
+      const accessToken = jwt.sign({
+        id: userDetail._id,
+      }, process.env.JWT_SECRET, {
+        expiresIn: "4h"
       })
-      const refreshToken=jwt.sign({
-        id:userDetail._id,
-        type:"refresh"
-      },process.env.JWT_SECRET,{
-        expiresIn:"1d"
+      const refreshToken = jwt.sign({
+        id: userDetail._id,
+        type: "refresh"
+      }, process.env.JWT_SECRET, {
+        expiresIn: "1d"
       })
       res.json({
         result: {
-          accessToken:accessToken,
-          refreshToken:refreshToken
+          accessToken: accessToken,
+          refreshToken: refreshToken
         },
         message: "Otp verified successfully. You are logged in now",
         meta: null
@@ -221,46 +221,156 @@ class AuthorizationControl {
   }
   dashboard = (req, res, next) => {
     try {
-
+      const dashboard = req.authUser
+      res.json({
+        result: {
+          _id: dashboard._id,
+          name: dashboard.name,
+          email: dashboard.email,
+          role: dashboard.role,
+          status: dashboard.status,
+        },
+        message: "Your profile",
+        meta: null
+      })
     }
     catch (exception) {
-      console.log("eception in dashboard control", exception)
+      console.log("exception in dashboard control", exception)
       next(exception)
     }
   }
-  changepass = (req, res, next) => {
+  changepass = async (req, res, next) => {
     try {
-
+      const payload = req.body//oldpass,newpass,comfirmpass
+      const loggedInUser = req.authUser
+      if (!bcrypt.compareSync(payload.oldPassword, loggedInUser.password)) {
+        throw new AppError({ message: "Old password does't match", code: 400 })
+      }
+      if (payload.newPassword !== payload.confirmPassword) {
+        throw new AppError({ message: "new password doesn't match", code: 400 })
+      }
+      const hash = bcrypt.hashSync(payload.newPassword, 10)
+      await services.updateUser(loggedInUser._id, {
+        password: hash
+      })
+      res.json({
+        result: null,
+        message: "Password Changed Successfully",
+        meta: null
+      })
     }
     catch (exception) {
       console.log("eception in changepass control", exception)
       next(exception)
     }
   }
-  frogetpass = (req, res, next) => {
+  forgetpass = async (req, res, next) => {
     try {
-
+      const email = req.body.email
+      const userDetail = await services.getSingleUserByFilter({
+        email: email,
+      })
+      if (!userDetail) {
+        throw new AppError({ message: "Given user hasnot been registered yet", code: 400 })
+      }
+      const token = genRanStr()
+      const expiryDate = new Date(Date.now() + (2 * 60 * 60 * 1000))
+      const updateBody = {
+        forgetToken: token,
+        expiryDate: expiryDate
+      }
+      const updateUser = await services.updateUser(userDetail._id, updateBody)
+      if (updateUser) {
+        await services.forgetPassEmail({ email: userDetail.email, name: userDetail.name, token: token })
+        res.json({
+          result:{
+            forgetToken:updateBody.forgetToken
+          },
+          message: "Please check your email",
+          meta: null
+        })
+      }
+      else{
+        throw new AppError({message:"Sorry! your request cannnot be processed at this moment",code:400})
+      }
     }
     catch (exception) {
       console.log("eception in forget control", exception)
       next(exception)
     }
   }
-  frogetpasstokenverify = (req, res, next) => {
+  frogetpasstokenverify = async(req, res, next) => {
     try {
-
+      const token=req.params.token
+      if(token.length>100){
+        throw new AppError({message:"Wrong token",code:400})
+      }
+      const user=await services.getSingleUserByFilter({
+        forgetToken:token
+      })
+      if(!user){
+        throw new AppError({message:"The given token does not exist"})
+      }
+      const today=new Date().getTime()
+      const tokenExpiryDate=new Date(user.expiryDate).getTime()
+      if(today>tokenExpiryDate){
+        throw new AppError({message:"Token already expoired",code:400})
+      }
+      res.json({
+        result:{
+          _id:user._id,
+          name:user.name,
+          email:user.email,
+          forgetToken:user.forgetToken,
+          expiryDate:user.expiryDate,
+          role:user.role,
+          status:user.status
+        },
+        message:"Verfied forget-pass",
+        meta:null
+      })
     }
     catch (exception) {
       console.log("eception in forgetpasstokenverify control", exception)
       next(exception)
     }
   }
-  setpasstoken = (req, res, next) => {
+  setforgetPass = async(req, res, next) => {
     try {
-
+      const payload=req.body
+      const user=await services.getSingleUserByFilter({
+        forgetToken:req.params.token
+      })
+      if(!user){
+        throw new AppError({message:"Token does not exits",code:400})
+      }
+      const today=new Date().getTime()
+      const tokenExpiryDate=new Date(user.expiryDate).getTime()
+      if(today>tokenExpiryDate){
+        throw new AppError({message:"This token has been expired",code:400})
+      }
+      await services.updateUser(user._id,{
+        password:bcrypt.hashSync(payload.password,10),
+        forget:null,
+        expiryDate:null
+      })
+      res.json({
+        result:user,
+        message:"Password Changed Successfully",
+        meta:null
+      })
     }
     catch (exception) {
       console.log("eception in setpasstoken control", exception)
+      next(exception)
+    }
+  }
+  logOut=async(req,res,next)=>{
+    try{
+
+    }
+    catch(exception){
+      console.log("exception in logout",exception)
       next(exception)
     }
   }

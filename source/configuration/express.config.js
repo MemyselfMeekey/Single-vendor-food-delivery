@@ -15,7 +15,7 @@ food.use(express.urlencoded({
     extended:false
 }))
 
-food.use("/food/login",router)
+food.use("/food",router)
 
 food.use((req,res,next)=>{
     next({code:404,messsage:"not found",detail:""})

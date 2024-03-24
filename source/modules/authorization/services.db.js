@@ -98,5 +98,32 @@ class services{
             throw exception
         }
     }
+    forgetPassEmail=async({email,name,token})=>{
+        try{    
+            await Mailing.sendEmail({
+                to:email,
+                subject:"RESETTING THE PASSWORD",
+                html:`
+                Dear <b> ${name}</b>,</br>
+                <p>You have requesten for the password change.</p><br>
+                <p>if this is your request please click the link below, or ignore the request</p>
+                <p>Your account has been registered successfully. Please click the link below to activate your account or copy psatethe url</p>
+                <a href="${process.env.FRONTEND_URL}chaneg-password/${token}/verify">${process.env.FRONTEND_URL}chaneg-password/${token}/verify
+                </a><br>
+                <p>Your link is activated only for 2 hours</p>
+                <b> Regards</b>
+                `,
+                text:`
+                Dear ${name}\n
+                You have requested to change the password. If this is your request, please copy and paste the link below,or ignore this message
+                ${process.env.FRONTEND_URL}activate/${token}\n
+                Regards\n
+                `
+            })
+        }
+        catch(exception){
+            throw exception
+        }
+    }
 }
 module.exports=new services()
