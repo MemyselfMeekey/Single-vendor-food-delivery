@@ -19,7 +19,7 @@ router.post("/change-pass",loginCheck,bodyvalidator(passwordChangeSchema),authCt
 router.post("/forgetpass",bodyvalidator(forgetPass),authCtrl.forgetpass)
 router.post("/forgetpass/:token/verification",authCtrl.frogetpasstokenverify)
 router.post("/setpass/:token",bodyvalidator(passwordSetSchema),authCtrl.setforgetPass)
-router.post('/logout',authCtrl.logOut)
+router.post('/logout',loginCheck,authCtrl.logOut)
 
 
 module.exports=router

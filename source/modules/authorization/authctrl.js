@@ -205,6 +205,11 @@ class AuthorizationControl {
       }, process.env.JWT_SECRET, {
         expiresIn: "1d"
       })
+      const personalAccessToken=await services.pat({
+        userId:userDetail._id,
+        token:accessToken,
+        refreshToken:refreshToken
+      })
       res.json({
         result: {
           accessToken: accessToken,
@@ -365,9 +370,23 @@ class AuthorizationControl {
       next(exception)
     }
   }
+
   logOut=async(req,res,next)=>{
     try{
-
+      //Once run this by  sir
+      let token=req.headers['authorization']
+      if(token){
+        token=token.split(" ").pop()
+        await services.deleteAcessToken(token)
+        res.status(200).json({
+          result:token,
+          message:"LogOut successfully completed",
+          meta:null
+        })
+      }
+      else{
+        throw new AppError({message:"Token has a problem",code:401})
+      }
     }
     catch(exception){
       console.log("exception in logout",exception)

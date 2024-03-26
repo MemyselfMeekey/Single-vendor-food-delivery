@@ -1,6 +1,6 @@
 const Mail = require("nodemailer/lib/mailer")
 const {genRanStr}=require("../../configuration/randomstring.generator")
-const UserModel = require("../../database/db.mongoose")
+const {UserModel,PatModel} = require("../../database/db.mongoose")
 const AppError = require("../../exception/error.app")
 const Mailing = require("../../services/mailing")
 class services{
@@ -120,6 +120,29 @@ class services{
                 Regards\n
                 `
             })
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+    pat=async({userId,token,refreshToken})=>{
+        try{
+            const user=await PatModel({userId,token,refreshToken})
+            return await user.save()
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+    deleteAcessToken=async(token,refreshToken)=>{
+        try{
+            
+            const personalToken=await PatModel.deleteOne({
+                token:token,
+                refreshToken:refreshToken
+                
+            })
+            return personalToken
         }
         catch(exception){
             throw exception

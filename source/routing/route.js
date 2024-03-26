@@ -8,7 +8,7 @@ const favourites=require("../modules/favourites/fav.routing")
 
 
 router.use("/auth",authRouter)
-// router.use("/banner",banner)
+router.use("/banner",banner)
 router.use("/resturants",resturants)
 // router.use("/foodcategory",foodcategory)
 // router.use("/favourites",favourites)

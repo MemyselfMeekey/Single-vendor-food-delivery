@@ -17,6 +17,8 @@ const loginCheck=async(req,res,next)=>{
         if(data.hasOwnProperty('type'&&data.type==="refresh")){
             throw new AppError({message:"User AcESS tOKEN",code:403})
         }
+        const personalAt= await services.pat(token)
+        if (personalAt){
         const userDetail=await services.getSingleUserByFilter({
             _id:data.id
         })
@@ -25,9 +27,14 @@ const loginCheck=async(req,res,next)=>{
         }
         else{
             req.authUser=userDetail;
-            next()
+            next()  
         }
     }
+    else{
+        throw new AppError({message:"User has already logged out",code:401})
+    }
+   
+}
     catch(exception){
         console.log(exception)
         const errorObj=exception
