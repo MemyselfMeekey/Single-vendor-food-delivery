@@ -15,6 +15,7 @@ const myStorage=multer.diskStorage({
 })
 const pathSet=(dirPath)=>{
     return(req,res,next)=>{
+
     const path="./images"+dirPath
 
     if(!fs.existsSync(path)){
@@ -27,7 +28,8 @@ const pathSet=(dirPath)=>{
 
 const imageFilt=(req,file,callback)=>{
     const extension=file.originalname.split(".").pop()
-    const allowedExt=['jpeg','jpg','webp','png','svg','bmg','gif']
+   
+    const allowedExt=['jpeg','jpg','webp','png','svg','bmp','gif']
     if(allowedExt.includes(extension.toLowerCase())){
         callback(null,true)
     }

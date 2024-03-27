@@ -1,9 +1,25 @@
 const bodyvalidator=(schema)=>{
-    return (req,res,next)=>{
+    return async(req,res,next)=>{
        //you need to use multer
         try{
             const data=req.body
-        
+            
+            if(req.files && req.files.length){
+                let images=[]
+                let fieldName=""
+                Object.keys(req.files).map((index)=>{
+                    const image=req.files[index]
+                    images.push(image)
+                    fieldName=images.fieldname
+                })
+                data[fieldName]=images
+            }else if(req.file){
+                
+                data[req.file.fieldname]=req.file
+               
+            }
+            await schema.validateAsync(data,{abortEarly:false})
+            
             next()
         }
         catch(exception){

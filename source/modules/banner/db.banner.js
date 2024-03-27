@@ -17,12 +17,12 @@ const BannerSchema=new mongoose.Schema({
     },
     createdBy:{
         type:mongoose.Types.ObjectId,
-        ref:"User",
+        ref:"FoodDeliveryUser",
         default:null
     },
     updatedBy:{
         type:mongoose.Types.ObjectId,
-        ref:"User",
+        ref:"FoodDeliveryUser",
         default:null
     }
 },{
