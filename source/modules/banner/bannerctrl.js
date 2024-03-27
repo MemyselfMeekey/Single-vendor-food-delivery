@@ -1,6 +1,6 @@
 const AppError = require("../../exception/error.app")
 const BannerSvc = require("./services.banner")
-
+const {deleteFile}=require("../../configuration/delteFiles")
 class BannerCtrl {
     create = async (req, res, next) => {
         try {
@@ -54,6 +54,90 @@ class BannerCtrl {
             })
         }
         catch (exception) {
+            next(exception)
+        }
+    }
+    view=async(req,res,next)=>{
+        try{
+            const id=req.params.id
+            if(!id){
+                throw new AppError({message:"Id is required",code:400})
+            }
+            const detail=await BannerSvc.getDataById(id)
+            if(!detail){
+                throw new AppError({message:"Banner doesnot exist",code:400})
+            }
+            res.json({
+                result:detail,
+                messge:"Banner Detail fetched",
+                meta:null
+            })
+        }
+        catch(exception){
+            next(exception)
+        }
+    }
+    update=async(req,res,next)=>{
+        try{
+            const banner=await BannerSvc.getDataById(req.params.id)
+            if(!banner){
+                throw new AppError({message:"Given Id has no banner listed",code:400})
+            }
+            const payload=BannerSvc.transformUpdateObject(req.body,banner,req.authUser._id)
+            const updateData=await BannerSvc.updateBan(banner._id,payload)
+            if(!updateData){
+                throw new AppError({message:"Banner cannot be updated",code:400})
+            }
+            if(updateData.image!==payload.image){
+                deleteFile('./public/uploads/banner'+updateData.image)
+            }
+            res.json({
+                result:updateData,
+                message:"This Banner is Updated Successfullly",
+                meta:null
+            })
+        }
+        catch(exception){
+          next(exception)
+        }
+    }
+    delete=async(req,res,next)=>{
+        try{
+            const banner=await BannerSvc.getDataById(req.params.id)
+            console.log(banner)
+            if(!banner){
+                throw new AppError({message:"Banner does not exists",code:400})
+            }
+            const deletedBanner=await BannerSvc.deleteById(banner._id)
+            if(deletedBanner.image){
+                deleteFile("./public/uploads/banner"+deletedBanner.image)
+            }
+            res.json({
+                result:"",
+                message:"Deleted given banner succesfully",
+                meta:null
+            })
+        }
+        catch(exception){
+            next(exception)
+        }
+    }
+    listforhome=async(req,res,next)=>{
+        try{
+            const bannerList=await BannerSvc.getDataByFilter({
+                offset:0,
+                limit:10,
+                filter:{
+                    status:"active"
+                }
+            })
+            res.json({
+                result:bannerList,
+                message:"These banner will be listed in Homepage",
+                meta:null
+            })
+        }
+        catch(exception){
             next(exception)
         }
     }
