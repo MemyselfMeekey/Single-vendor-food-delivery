@@ -22,6 +22,7 @@ const pathSet=(dirPath)=>{
         fs.mkdirSync(path,{recursive:true})
     }
     req.uploadPath=path
+   
     next()
     }
 }
@@ -43,5 +44,6 @@ const uploader=multer({
     limits:{
         fileSize:50000000
     }
+   
 })
 module.exports={uploader,pathSet}

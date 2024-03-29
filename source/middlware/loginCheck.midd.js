@@ -4,7 +4,6 @@ const jwt=require("jsonwebtoken")
 const services=require("../modules/authorization/services.db")
 const loginCheck=async(req,res,next)=>{
     try{
-      
         let token=req.headers['authorization'] || null
         if(!token){
             throw new AppError({message:"Token is required",code:401})

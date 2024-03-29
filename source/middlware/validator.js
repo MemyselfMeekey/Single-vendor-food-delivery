@@ -3,8 +3,9 @@ const bodyvalidator=(schema)=>{
        //you need to use multer
         try{
             const data=req.body
-            
+           
             if(req.files && req.files.length){
+               
                 let images=[]
                 let fieldName=""
                 Object.keys(req.files).map((index)=>{

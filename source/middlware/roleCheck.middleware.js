@@ -6,6 +6,7 @@ const rolePermission=(role)=>{
                 ||
             (Array.isArray(role)&&role.includes(user.role))
         ){
+           
             next()
         }
         else{
