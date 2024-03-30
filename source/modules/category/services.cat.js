@@ -93,7 +93,7 @@ class CategoryService {
             console.log(id,data)
             const updateCat=await CatDB.findByIdAndUpdate(id,{
                 $set:data
-            })
+            },{new:true})
             console.log(updateCat)
             return updateCat
         }

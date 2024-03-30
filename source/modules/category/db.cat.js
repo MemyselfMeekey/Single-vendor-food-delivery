@@ -19,7 +19,7 @@ const CategorySchema=new mongoose.Schema({
     },
     image:{
         type:String,
-        requried:true
+        required:true
     },
    showInHome:{
     type:Boolean,
