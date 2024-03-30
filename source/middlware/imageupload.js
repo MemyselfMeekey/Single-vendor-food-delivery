@@ -8,7 +8,7 @@ const myStorage=multer.diskStorage({
         callback(null,req.uploadPath)
     },
     filename:(req,file,callback)=>{
-        const ext=file.originalname.split("").pop()
+        const ext=file.originalname.split(".").pop()
         const filename=Date.now()+"-"+genRanStr(20)+"."+ext
         callback(null,filename)
     }
@@ -22,7 +22,7 @@ const pathSet=(dirPath)=>{
         fs.mkdirSync(path,{recursive:true})
     }
     req.uploadPath=path
-   
+
     next()
     }
 }
@@ -37,6 +37,7 @@ const imageFilt=(req,file,callback)=>{
     else{
         callback({message:"Invalid image formant was uploaded",code:400})
     }
+    
 }
 const uploader=multer({
     storage:myStorage,
@@ -44,6 +45,6 @@ const uploader=multer({
     limits:{
         fileSize:50000000
     }
-   
 })
+
 module.exports={uploader,pathSet}

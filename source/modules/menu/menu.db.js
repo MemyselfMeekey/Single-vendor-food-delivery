@@ -24,7 +24,7 @@ const MenuSchema=new mongoose.Schema({
         ref:"FDCategory",
         default:null
     },
-    disocunt:{
+    discount:{
         type:Number,
         min:0,
         default:0
@@ -39,8 +39,10 @@ const MenuSchema=new mongoose.Schema({
         enum:['active','inactive'],
         default:'inactive'
     },
-    images:[String],
-    paarentId:{
+    images:{
+        type:String,
+    },
+    parentId:{
         type:mongoose.Types.ObjectId,
         ref:"FDCategory"
     },
@@ -63,5 +65,5 @@ const MenuSchema=new mongoose.Schema({
     autoCreate:true,
     autoIndex:true
 })
-const MenuDB=mongoose.model("FDModel",MenuSchema)
+const MenuDB=mongoose.model("FDMenu",MenuSchema)
 module.exports=MenuDB

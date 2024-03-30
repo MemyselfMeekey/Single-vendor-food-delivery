@@ -5,6 +5,7 @@ class menuCtrl{
     create=async(req,res,next)=>{
         try{
             const payload=MenuSvc.tranformCreateObject(req.body,req.authUser._id)
+            
             const menu=await MenuSvc.createMenu(payload)
             res.json({
                 result:{
@@ -41,7 +42,7 @@ class menuCtrl{
             }
         }
         const count=await MenuSvc.getPageCount(filter)
-        const data=await MenuSvc.getDataByFiler({offset,filter,limit})
+        const data=await MenuSvc.getDataByFilter({offset,filter,limit})
         res.json({
             result:data,
             message:"Menu fetched",
@@ -56,25 +57,73 @@ class menuCtrl{
         next(exception)
        }
     }
-    view=(req,res,next)=>{
+    view=async(req,res,next)=>{
         try{
-
+            const id=req.params.itemId
+            if(!id){
+                throw new AppError({messsage:"Id is required",code:400})
+            }
+            const detail=await MenuSvc.getDataById(id)
+            if(!detail){
+                throw new AppError({message:"Menu doesnot exists",code:400})
+            }
+            res.json({
+                result:detail,
+                message:"Menu Detail Fetched",
+                meta:null
+            })
         }
         catch(exception){
+            console.log("Exception in view",exception)
          next(exception)
         }
     }
-    update=(req,res,next)=>{
+    update=async(req,res,next)=>{
         try{
+            const menuId=req.params.itemId
+            const menu=await MenuSvc.getDataById(menuId)
+            if(!menu){
+                throw new AppError({message:"Menu Doesnot exists",code:400})
+            }
+            const payload=MenuSvc.tranformUpdateObject(req.body,menu,req.authUser._id)
+            const updatedData=await MenuSvc.updateData(menu._id,payload)
+            if(!updatedData){
+                throw new AppError({message:"Product cannot be updated",code:400})
+            }
+            if(updatedData.images!==payload.images){
+                deleteFile('./images/uploads/menu'+updatedData.images)
+            }
+            res.json({
+                result:{
+                    updatedData:updatedData,
+                    message:"Menu has been successfully updated",
+                    meta:null
+                }
+            })
 
         }
         catch(exception){
             next(exception)
         }
     }
-    delete=(req,res,next)=>{
+    delete=async(req,res,next)=>{
         try{
-
+            const menuId=req.params.itemId
+            const menu=await MenuSvc.getDataById(menuId)
+            if(!menu){
+                throw new AppError({message:"MenuId doesnot exists",code:400})
+            }
+            console.log(menu)
+            const deleteMenu=await MenuSvc.deleteById(menu._id)
+           
+            if(deleteMenu.images.length){
+                deleteFile('.images/uploads/menu'+deleteMenu.images)
+            }
+            res.json({
+                result:deleteMenu.name,
+                message:"This id has been deleted",
+                meta:null
+            })
         }
         catch(exception){
             next(exception)
