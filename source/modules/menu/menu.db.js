@@ -39,13 +39,10 @@ const MenuSchema=new mongoose.Schema({
         enum:['active','inactive'],
         default:'inactive'
     },
-    images:{
+    images: [{
         type:String,
-    },
-    parentId:{
-        type:mongoose.Types.ObjectId,
-        ref:"FDCategory"
-    },
+    }],
+   
     showInHome:{
         type:Boolean,
         default:false

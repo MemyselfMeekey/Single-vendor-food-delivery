@@ -21,6 +21,10 @@ const CategorySchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    parentId:{
+        type:mongoose.Types.ObjectId,
+        ref:"FDCategory"
+    },
    showInHome:{
     type:Boolean,
     default:false

@@ -2,7 +2,6 @@ const slugify = require("slugify")
 const AppError = require("../../exception/error.app")
 const CatDB = require("./db.cat")
 
-
 class CategoryService {
     transformCreateObject = (data, authUserId) => {
         try {
@@ -48,6 +47,7 @@ class CategoryService {
     }
     getDataByFilter=async({offset,filter,limit})=>{
         try{
+            console.log(offset,limit,filter)
             const data=await CatDB.find(filter)
             .populate('createdBy',['_id','name','email'])//user table column
             .sort({'_id':"desc"})
@@ -113,6 +113,7 @@ class CategoryService {
             throw exception
         }
     }
+    
 }
 const CatSvc = new CategoryService()
 module.exports = CatSvc

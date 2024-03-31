@@ -127,6 +127,45 @@ class MenuService {
             throw exception
         }
     }
+    setFilters=(query)=>{
+        let filter={
+            offset:0,
+            limit:+query.limit || 5,
+            search:{},
+            page: +query.page || 1
+        }
+        if(filter.page<=0 || filter.limit<=0){
+            throw new AppError({message:" Page number and limit should begin from 1",code:400})
+        }
+       
+        filter.offset=(filter.page-1)*filter.limit
+
+        filter.search={
+            status:"active"
+        }
+        if(query.search){
+            filter.search={
+                ...filter.search,
+                $or:[
+                    {name:new RegExp(req.query.search,'i')},
+                    { description: new RegExp(req.query.search, 'i') },
+                    { price: new RegExp(req.query.search, 'i') },
+                    { status: new RegExp(req.query.search, 'i') }
+                ]
+            }
+        }
+        return filter
+    }
+    getTotalCount=async(filter)=>{
+        try{
+            const data=await MenuDB.countDocuments(filter)
+            return data
+        }
+        catch(exception){
+            console.log("Exception in getTotalCOunt menu",exception)
+            throw exception
+        }
+    }
 }
 const MenuSvc = new MenuService()
 module.exports = MenuSvc

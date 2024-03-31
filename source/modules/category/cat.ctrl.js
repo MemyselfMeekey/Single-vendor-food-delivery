@@ -1,6 +1,7 @@
 const AppError = require("../../exception/error.app")
 const CatSvc = require("./services.cat")
 const {deleteFile}=require("../../configuration/delteFiles")
+const MenuSvc=require("../menu/services.menu")
 
 class CategoryControl {
     create = async (req, res, next) => {
@@ -83,7 +84,7 @@ class CategoryControl {
                 throw new AppError({ message: "No category was found ", code: 400 })
             }
             console.log(cat)
-            const payload = CatSvc.transformUpdateObject(req.body, cat, req.authUser._id)
+            const payload = await CatSvc.transformUpdateObject(req.body, cat, req.authUser._id)
            console.log(payload)
             const updatedData = await CatSvc.updateData(cat._id, payload)
             
@@ -144,31 +145,49 @@ class CategoryControl {
             next(exception)
         }
     }
-    // dataBySlug = async (req, res, next) => {
-    //     try {
-    //         const slug=req.params.slug
-    //         const catDetail=await CatSvc.getDataByFilter({
-    //             offset:0,
-    //             limit:1,
-    //             filter:{
-    //                 slug:slug,
-    //                 status:"active"
-    //             }
-    //         })
-    //         const filter=CatSvc.setFilters(req.query)
-    //         filter.search={
-    //             ...filter.search,
-    //             category:{$in:[catDetail[0].id]}
-    //         }
-    //         const getTotalCount=await CatSvc.getTotalCount(filter.search)
-    //         const 
-    //     }
-    //     catch (exception) {
-    //         console.log(exception)
-    //         next(exception)
-    //     }
-    // }
-
+    dataBySlug = async (req, res, next) => {
+        try {
+            const slug=req.params.slug
+            
+            const catDetail=await CatSvc.getDataByFilter({
+                offset:0,
+                limit:1,
+                filter:{
+                    slug:slug,
+                    status:"active"
+                }
+            })
+            const filter=MenuSvc.setFilters(req.query)
+            filter.search={
+                ...filter.search,
+                category:{$in:[catDetail[0].id]}
+            }
+            const getTotalCount=await MenuSvc.getTotalCount(filter.search)
+            
+            
+            const menu=await MenuSvc.getDataByFilter({
+                offset:filter.offset,
+                limit:filter.limit,
+                filter:filter.search
+            })
+            res.json({
+                result:{
+                    category:catDetail[0],
+                    menu:menu
+                },
+                message:"Data by slug has been fetched",
+                meta:{
+                    page:filter.page,
+                    limit:filter.limit,
+                    total:getTotalCount
+                }
+            })
+        }
+        catch (exception) {
+            console.log(exception)
+            next(exception)
+        }
+    }
 }
 const CatCtrl = new CategoryControl()
 module.exports = CatCtrl

@@ -9,10 +9,12 @@ const bodyvalidator=(schema)=>{
                
                 let images=[]
                 let fieldName=""
+                // req.files ===> {0: {}, 1: {}, 2: {}} ==> [0,1,2].map((ind) => ind => 0 )
+                // Object.values(req.files) => []
                 Object.keys(req.files).map((index)=>{
                     const image=req.files[index]
-                    images.push(image)
-                    fieldName=images.fieldname
+                    images.push(image)  // [{},{}, {}]
+                    fieldName=image.fieldname
                 })
                 data[fieldName]=images
             }else if(req.file){
@@ -20,6 +22,8 @@ const bodyvalidator=(schema)=>{
                 data[req.file.fieldname]=req.file
                
             }
+
+            console.log(data)
             await schema.validateAsync(data,{abortEarly:false})
          
             next()

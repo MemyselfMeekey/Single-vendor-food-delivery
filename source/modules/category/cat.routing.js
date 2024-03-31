@@ -17,5 +17,5 @@ router.route('/:id')
     .delete(loginCheck,rolePermission('admin'),CatCtrl.delete)
 
 router.get("/home/list",loginCheck,rolePermission('admin'),CatCtrl.homeList)
-// router.get("/:slug/by-slug",CatCtrl.dataBySlug)
+router.get("/:slug/by-slug",CatCtrl.dataBySlug)
 module.exports=router
