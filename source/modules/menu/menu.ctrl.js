@@ -1,5 +1,7 @@
 const AppError = require("../../exception/error.app")
 const MenuSvc = require("./services.menu")
+const {deleteFile}=require("../../configuration/delteFiles")
+const CatSvc=require("../category/services.cat")
 
 class menuCtrl{
     create=async(req,res,next)=>{
@@ -129,9 +131,21 @@ class menuCtrl{
             next(exception)
         }
     }
-    homeList=(req,res,next)=>{
+    homeList=async(req,res,next)=>{
         try{
-
+            const menulist=await CatSvc.getDataByFilter({
+                offset:0,
+                limit:(+req.query.limit ||5 ),
+                filter:{
+                    status:"active",
+                    showInHome:true
+                }
+            })
+            res.json({
+                result:menulist,
+                message:"Menu for homepage",
+                meta:null
+            })
         }
         catch(exception){
          next(exception)

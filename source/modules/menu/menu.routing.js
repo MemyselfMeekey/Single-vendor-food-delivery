@@ -13,6 +13,6 @@ router.route("/:itemId")
     .get(loginCheck,rolePermission('admin'),MenuCtrl.view)
     .put(loginCheck,rolePermission('admin'),pathSet('/uploads/menu'),uploader.array('images'),bodyvalidator(MenuUpdateDto),MenuCtrl.update)
     .delete(loginCheck,rolePermission('admin'),MenuCtrl.delete)
-router.get("/home/list",MenuCtrl.homeList)
+router.get("/home/list",loginCheck,MenuCtrl.homeList)
 
 module.exports=router
