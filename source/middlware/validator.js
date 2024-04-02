@@ -23,7 +23,7 @@ const bodyvalidator=(schema)=>{
                
             }
 
-            console.log(data)
+           
             await schema.validateAsync(data,{abortEarly:false})
          
             next()

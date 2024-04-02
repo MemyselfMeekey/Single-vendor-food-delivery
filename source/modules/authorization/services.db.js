@@ -63,10 +63,10 @@ class services{
             throw exception
         }
     }
-    userStore=async(data)=>{
+    userStore=async(data,authUser)=>{
         try{
             const user=new UserModel(data)
-        
+            user.createdBy=authUser
             return await user.save()
         }
         catch(exception){

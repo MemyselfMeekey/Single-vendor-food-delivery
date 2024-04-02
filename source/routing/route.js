@@ -4,13 +4,14 @@ const authRouter = require("../modules/authorization/auth.routing")
 const banner=require("../modules/banner/banner.routing")
 const category=require("../modules/category/cat.routing")
 const menu=require("../modules/menu/menu.routing")
-
+const user=require("../../source/modules/User/user.router")
 
 
 router.use("/auth",authRouter)
 router.use("/banner",banner)
 router.use("/category",category)
 router.use("/menu",menu)
+router.use("/user",user)
 
 
 

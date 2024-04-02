@@ -19,6 +19,13 @@ const UserDataSchema=new mongoose.Schema({
         required:true,
         unique:true
     },
+    phone:{
+        type:String,
+        min:10,
+        max:10,
+        required:true,
+        unique:true,
+    },
     role:{
         type:String,
         enum:['admin','customer','seller'],
@@ -49,6 +56,15 @@ const UserDataSchema=new mongoose.Schema({
     updatedBy:{
         type:mongoose.Types.ObjectId,
         ref:"FoodDeliveryUser",
+        default:null
+    },
+    deletedBy:{
+        type:mongoose.Types.ObjectId,
+        ref:"FoodDeliveryUser",
+        default:null
+    },
+    deletedAt:{
+        type:Date,
         default:null
     }
     },{
