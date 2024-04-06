@@ -1,3 +1,4 @@
+const Joi=require("joi")
 const bodyvalidator=(schema)=>{
     return async(req,res,next)=>{
        //you need to use multer
@@ -22,9 +23,9 @@ const bodyvalidator=(schema)=>{
                 data[req.file.fieldname]=req.file
                
             }
-
-           
-            await schema.validateAsync(data,{abortEarly:false})
+            
+         
+            await Joi.object().validateAsync(data,{abortEarly:false})
          
             next()
         }

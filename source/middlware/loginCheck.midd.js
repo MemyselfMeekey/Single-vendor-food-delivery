@@ -25,7 +25,9 @@ const loginCheck=async(req,res,next)=>{
             throw new AppError({message:"User does not exists anymore",code:401})
         }
         else{
+
             req.authUser=userDetail;
+            
             next()  
         }
     }

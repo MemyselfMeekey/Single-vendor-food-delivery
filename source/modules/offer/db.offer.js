@@ -1,40 +1,57 @@
-const mongoose=require("mongoose")
+const mongoose = require("mongoose")
 
-const OfferSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
-        min:2,
-        max:50
+const OfferSchema = new mongoose.Schema({
+    description: {
+        type: String,
+        required: true,
+        min: 2,
+        max: 50
     },
-    startDate:{
-        type:Date,
-        required:true,
+    startDate: {
+        type: Date,
+        required: true,
 
     },
-    endDate:{
-        type:Date,
-        required:true
+    endDate: {
+        type: Date,
+        required: true
     },
-    image:{
-        type:String,
-        required:false,
-        unique:true
+    menu: [{
+        menuId: {
+            type: mongoose.Types.ObjectId,
+            ref: 'FDMenu',
+            required: true,
+       
+        },
+        offerDisount: {
+            type: Number,
+            required: true,
+            min: 1
+        }
+    }],
+
+   offerPrice: {
+        type: Number,
+        required: true,
     },
-    createdBy:{
-        type:mongoose.Types.ObjectId,
-        ref:'FoodDeliveryUser',
-        default:null
+    price: {
+        type: Number,
+        required: true
     },
-    updatedBy:{
-        type:mongoose.Types.ObjectId,
-        ref:"FoodDeliveryUser",
-        default:null
-       }
-},{
-    timestamps:true,
-    autoIndex:true,
-    autoCreate:true
+    createdBy: {
+        type: mongoose.Types.ObjectId,
+        ref: 'FoodDeliveryUser',
+        default: null
+    },
+    updatedBy: {
+        type: mongoose.Types.ObjectId,
+        ref: "FoodDeliveryUser",
+        default: null
+    }
+}, {
+    timestamps: true,
+    autoIndex: true,
+    autoCreate: true
 })
-const OfferDB=mongoose.model("FDOffer",OfferSchema)
-module.exports=OfferDB
+const OfferDB = mongoose.model("FDOffer", OfferSchema)
+module.exports = OfferDB
