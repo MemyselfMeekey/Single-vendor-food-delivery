@@ -4,6 +4,7 @@ const OfferSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true,
+        unique:true,
         min: 2,
         max: 50
     },
@@ -23,21 +24,20 @@ const OfferSchema = new mongoose.Schema({
             required: true,
        
         },
-        offerDisount: {
+        offerDiscount: {
             type: Number,
             required: true,
             min: 1
-        }
+        },
+        offerPrice: {
+            type: Number,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true
+        },
     }],
-
-   offerPrice: {
-        type: Number,
-        required: true,
-    },
-    price: {
-        type: Number,
-        required: true
-    },
     createdBy: {
         type: mongoose.Types.ObjectId,
         ref: 'FoodDeliveryUser',

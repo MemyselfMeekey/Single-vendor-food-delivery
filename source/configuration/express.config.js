@@ -31,7 +31,7 @@ food.use((err,req,res,next)=>{
     if(err.code===11000){
         const keys=Object.keys(err.keyPattern)
         console.log({keys})
-        keys.map((fieldMap)=>{
+        keys.map((fieldName)=>{
             data[fieldName]=fieldName+"should be unique"
         })
         message="validation failed",

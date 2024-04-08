@@ -4,6 +4,7 @@ const OfferDB = require("./db.offer");
 class OfferService{
     create=async(data)=>{
         try{
+            console.log("hi")
             const offer=new OfferDB(data)
             return await offer.save()
             // offer table data entry 
@@ -21,22 +22,9 @@ class OfferService{
                 if (menu && Array.isArray(menu)) {
                      
 
-                    const menuId = menu.map((item) => item.menuId)  // ['id', 'id']
-                    //const menuItems = Menu.find({_id: {$in: menuId}})
-                    // const storeData = []
-                    // menuItems.map((menuDetail, ind) => {
-                        // const singleItem = {}  
-                        // menu.map((item) => { 
-                            // if(menuDetail._id.equals(item.menuId)) {
-                                // const offerPrice = menuDetail.price - menuDetail.price * item.offerDiscount/100
-                            // singleItem = {...item, }    
-                            //}
-                            
-                        //})
-                    // })
-                    // [{menuId: '', offerDiscount: '', offerId: ''}]
+                    const menuIds = menu.map((item) => item.menuId)  
 
-                    return menuId
+                    return menuIds
                 } 
             
         }
@@ -53,37 +41,67 @@ class OfferService{
             throw exception
         }
     }
-    getAllDetails=async(menuItems,menu)=>{
+    getAllDetails=async(menuItems,menu,authUser)=>{
         try{    
+            
         let storeData=[]
-       
-            // let menuItem=menu.map(item=>item._id.equals(menuDetailItem.menuId))
-            // if(menuItem){
-            //     let offerPrice=menuItem.price-(menuItem.price*menuDetailItem.offerDiscount / 100)
-            //     let singleItem={
-            //         ...menuItem,
-            //         offerPrice
-            //     }
-            //     storeData.push(singleItem)
-            // }
-          console.log(menuItems,menu)
             menuItems.map((menuDetail,ind)=>{
+               
                 let singleItem={}
-                menu.menu.map((item) => { 
+                menu.menu.map((item) => {
+
                     if(menuDetail._id.equals(item.menuId)) {
                         const offerPrice = menuDetail.price - menuDetail.price * item.offerDiscount/100
                         
-                        singleItem = {...item,offerPrice}
-                      
+                        singleItem = {...item,offerPrice, price: menuDetail.price}
+                        
                     }
-                    console.log(singleItem)
                     
                 })
                
                 storeData.push(singleItem)
+                menu.createdBy=authUser
+               
             })
-          
-        return storeData
+        console.log({
+            ...menu,
+            menu: storeData
+        })
+        return {
+            ...menu,
+            menu: storeData
+        }
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+    getTotalCount=async(filter)=>{
+        try{
+            const count=await OfferDB.countDocuments(filter)
+            return count
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+    getDataByFilter=async({offset,filter,limit})=>{
+        try{
+            const offer=await OfferDB.find(filter)
+            .populate('createdBy',['_id','name','email'])
+            .sort({'_data':"desc"})
+            .skip(offset)
+            .limit(limit)
+            return offer
+        }
+        catch(exception){
+            throw exception
+        }
+    }
+    getDataById=async(id)=>{
+        try{
+            const data=await OfferDB.findById(id)
+            return data
         }
         catch(exception){
             throw exception
