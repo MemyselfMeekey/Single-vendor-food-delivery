@@ -24,7 +24,6 @@ const bodyvalidator=(schema)=>{
                
             }
             
-         
             await Joi.object().validateAsync(data,{abortEarly:false})
          
             next()

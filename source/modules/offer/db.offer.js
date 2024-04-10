@@ -38,6 +38,10 @@ const OfferSchema = new mongoose.Schema({
             required: true
         },
     }],
+    showInHome:{
+        type:Boolean,
+        default:false
+    },
     createdBy: {
         type: mongoose.Types.ObjectId,
         ref: 'FoodDeliveryUser',

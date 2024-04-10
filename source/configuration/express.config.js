@@ -28,6 +28,8 @@ food.use((err,req,res,next)=>{
     let data=err.data || {}
     let message=err.message ||"SERVER ERROR"
 
+    console.log(err)
+    
     if(err.code===11000){
         const keys=Object.keys(err.keyPattern)
         console.log({keys})
@@ -35,7 +37,7 @@ food.use((err,req,res,next)=>{
             data[fieldName]=fieldName+"should be unique"
         })
         message="validation failed",
-        code="422"
+        code=422
     }
 
     res.status(code).json({

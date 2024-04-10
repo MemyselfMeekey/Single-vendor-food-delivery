@@ -1,10 +1,10 @@
+const AppError = require("../../exception/error.app");
 const MenuDB = require("../menu/menu.db");
 const OfferDB = require("./db.offer");
 
 class OfferService{
     create=async(data)=>{
         try{
-            console.log("hi")
             const offer=new OfferDB(data)
             return await offer.save()
             // offer table data entry 
@@ -12,6 +12,7 @@ class OfferService{
             // obj ===> return
         }
         catch(exception){
+            console.log(exception)
             throw exception
         }
     }
@@ -34,7 +35,9 @@ class OfferService{
     }
     getDetailsById=async(menuId)=>{
         try{
+         
             const menuItems= await MenuDB.find({_id:{$in:menuId}})//search menu according to id as it is in array
+          
             return menuItems
         }
         catch(exception){
@@ -60,13 +63,10 @@ class OfferService{
                 })
                
                 storeData.push(singleItem)
-                menu.createdBy=authUser
+                menu.updatedBy=authUser
                
             })
-        console.log({
-            ...menu,
-            menu: storeData
-        })
+
         return {
             ...menu,
             menu: storeData
@@ -103,6 +103,29 @@ class OfferService{
             const data=await OfferDB.findById(id)
             return data
         }
+        catch(exception){
+            throw exception
+        }
+    }
+    updateOffer=async(id,data)=>{
+        try{
+            const update=await OfferDB.findByIdAndUpdate(id,{
+                $set:data
+            })
+            return update
+        }    
+        catch(exception){
+            throw exception
+        }
+    }
+    deleteById=async(id)=>{
+        try{
+            const deleteOffer=await OfferDB.findByIdAndDelete(id)
+            if(!deleteOffer){
+                throw new AppError({message:"This id doesnot exists anymore",code:400})
+            }
+            return deleteOffer
+        }   
         catch(exception){
             throw exception
         }
