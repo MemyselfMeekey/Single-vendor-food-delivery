@@ -5,12 +5,12 @@ class Mailing{
     constructor(){
         try{
             this.#transporter=nodemailer.createTransport({
-                host:process.env.SMTP_HOST,
+                service:'gmail',
+                host:'smtp.gmail.com',
                 port:587,
-                secure:false,
                 auth:{
-                    user:process.env.SMTP_USER,
-                    pass:process.env.SMTP_PASS
+                    user:'nuwakotedon2062@gmail.com',
+                    pass:'porsiempreenmisrecuerdos_1011'
                 }
             })
 
@@ -21,12 +21,12 @@ class Mailing{
         }
         }
         sendEmail=async({to,subject,html=null,text})=>{
-            console.log(to,subject,html,text)
+          
             try{
                 const status=await this.#transporter.sendMail({//to send the email
                     to:to,
                     subject:subject,
-                    from:process.env.SMTP_FROM,
+                    from:'fooddelivery123@gmail.com',
                     html:html,//if not text is itself as html
                     text:text || html
                     

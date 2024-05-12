@@ -4,11 +4,16 @@ const router=require("../routing/route")
 const food=express()
 const myEvent=require("../../source/eventlistener/myevent.listener")
 const {MongooseError}=require('mongoose')
+const cors=require("cors")
+food.use(cors())
+
 
 food.use((req,res,next)=>{
     req.myEvent=myEvent
     next()
 })
+
+food.use("/images",express.static(".images/uploads"))
 
 food.use(express.json())
 food.use(express.urlencoded({

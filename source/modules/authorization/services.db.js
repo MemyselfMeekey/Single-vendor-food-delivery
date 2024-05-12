@@ -31,8 +31,8 @@ class services{
                 subject:"About activation",
                 html:`
                 Dear <b>${user.name}</b>, <br>
-                <p>Your account has been registered successfully. Please click the link below to activate your account or copy paste the url.Your activation token is ${user.activationToken}${user.otp}</p>
-                <a href="${process.env.FRONTEND_URL}activate/${user.activationToken}">${process.env.FRONTEND_URL}</a><br>
+                <p>Your account has been registered successfully. Please click the link below to activate your account or copy paste the url.</p>
+                <a href="${process.env.FRONTEND_URL}activation/${user.activationToken}">${process.env.FRONTEND_URL}activation/${user.activationToken}</a><br>
                 <h1>Donot reply to this email</h1>
                 <b>Best Regards</b>
                 `,
@@ -51,6 +51,7 @@ class services{
     }
     sendOtp=async({email,otp})=>{
         try{
+            console.log(otp)
             await Mailing.sendEmail({
                 to:email,
                 subject:"Otp for logging in",
@@ -86,13 +87,22 @@ class services{
     }
     updateUser=async(id,data)=>{
         try{
-            const update=await UserModel.findByIdAndUpdate(id,{
-                $set:data
-            })
-            if(!update){
-                throw new AppError({message:"User doesnot exist"})
+            console.log("came data",data)
+
+            const update = await UserModel.findByIdAndUpdate(id, {
+                $set: data
+            },{
+                new:true
+            });
+    
+            // Log the updated data to verify changes
+           
+            console.log(update)
+            if (!update) {
+                throw new AppError({ message: "User does not exist" });
             }
-            return update
+    
+            return update;
         }
         catch(exception){
             throw exception

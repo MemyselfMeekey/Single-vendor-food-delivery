@@ -23,7 +23,7 @@ class AuthorizationControl {
 
       res.json({
         result: user,
-        message: "Use the activation token to activate your account",
+        message: "Please check your provided email",
         meta: null
       })
     }
@@ -72,20 +72,24 @@ class AuthorizationControl {
         email: email,
 
       })
+     
       if (!user) {
         throw new AppError({ message: "User has not been registered yet " })
       }
       const token = genRanStr()
 
       const expiryDate = new Date()
+      
       expiryDate.setHours(expiryDate.getHours() + 2)
-      await services.updateUser(user._id, {
+   
+      const updateUser=await services.updateUser(user._id, {
         activationToken: token,
 
         expiryDate: expiryDate
       })
-      const myEvent = req.myEvent
-      myEvent.emit('sendRegisterMail', { name: user.name, email: user.email, activationToken: token })
+      console.log("updateUser")
+  
+      myEvent.emit('sendRegisterMail',updateUser)
       res.json({
         result: {
           activationToken: token,
@@ -163,7 +167,8 @@ class AuthorizationControl {
         sendOtp.emit('sendOtpMail', { email: userDetail.email, otp: otp })
         res.json({
           result: {
-            otp: otp
+            otp:otp,
+            userWithotp:userWithotp
           },
           message: "Please check your email for otp verification",
           meta: null
@@ -213,7 +218,8 @@ class AuthorizationControl {
       res.json({
         result: {
           accessToken: accessToken,
-          refreshToken: refreshToken
+          refreshToken: refreshToken,
+          userDetail:userDetail
         },
         message: "Otp verified successfully. You are logged in now",
         meta: null
