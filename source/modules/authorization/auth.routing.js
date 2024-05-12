@@ -9,7 +9,7 @@ const loginCheck = require('../../middlware/loginCheck.midd')
 router.post("/registration",pathSet("/uploads/user"),uploader.single("image"),bodyvalidator(regSchema),authCtrl.registration)
 router.get("/verification/:token",authCtrl.verificationToken)
 router.post("/resendverification",bodyvalidator(resendToken),authCtrl.resendActivationToken)
-router.get("/activation/:token",bodyvalidator(passwordSetSchema),authCtrl.activation)
+router.post("/activation/:token",bodyvalidator(passwordSetSchema),authCtrl.activation)
 
 router.post("/login",bodyvalidator(loginDto),authCtrl.login)
 router.post("/verify-otp",authCtrl.verifyOtp)

@@ -2,6 +2,11 @@ const express=require("express")
 require("./database.connection")
 const router=require("../routing/route")
 const food=express()
+const cors = require('cors')
+
+food.use(cors())
+
+
 const myEvent=require("../../source/eventlistener/myevent.listener")
 const {MongooseError}=require('mongoose')
 
@@ -10,6 +15,7 @@ food.use((req,res,next)=>{
     next()
 })
 
+food.use("/images", express.static('./images/uploads'))
 food.use(express.json())
 food.use(express.urlencoded({
     extended:false

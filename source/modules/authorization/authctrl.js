@@ -163,7 +163,8 @@ class AuthorizationControl {
         sendOtp.emit('sendOtpMail', { email: userDetail.email, otp: otp })
         res.json({
           result: {
-            otp: otp
+            otp: otp,
+            userWithotp: userWithotp
           },
           message: "Please check your email for otp verification",
           meta: null
