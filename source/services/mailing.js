@@ -6,11 +6,11 @@ class Mailing{
         try{
             this.#transporter=nodemailer.createTransport({
                 service:'gmail',
-                host:'smtp.gmail.com',
+                host:process.env.SMTP_HOST,
                 port:587,
                 auth:{
-                    user:'nuwakotedon2062@gmail.com',
-                    pass:'porsiempreenmisrecuerdos_1011'
+                    user:process.env.SMTP_USER,
+                    pass:process.env.SMTP_PASS
                 }
             })
 
