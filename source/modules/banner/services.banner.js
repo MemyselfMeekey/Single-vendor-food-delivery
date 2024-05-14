@@ -13,6 +13,7 @@ class BannerService{
     }
     createBanner=async(data)=>{
         try{
+            console.log(data)
             const banner=new BannerModel(data)
             return await banner.save()
         }
