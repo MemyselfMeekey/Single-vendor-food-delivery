@@ -83,8 +83,10 @@ class BannerCtrl {
             if(!banner){
                 throw new AppError({message:"Given Id has no banner listed",code:400})
             }
-            const payload=BannerSvc.transformUpdateObject(req.body,banner,req.authUser._id)
-            const updateData=await BannerSvc.updateBan(banner._id,payload)
+            const payload=await BannerSvc.transformUpdateObject(req.body,banner,req.authUser._id)
+            console.log("Banner id",banner)
+            console.log("payload",payload)
+            const updateData=await BannerSvc.updateBan(banner,payload)
             if(!updateData){
                 throw new AppError({message:"Banner cannot be updated",code:400})
             }

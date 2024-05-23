@@ -26,7 +26,7 @@ class CategoryService {
     }
     createCat = async (data) => {
         try {
-           
+            console.log("backend",data)
             const cat = new CatDB(data)
             return await cat.save()
         }

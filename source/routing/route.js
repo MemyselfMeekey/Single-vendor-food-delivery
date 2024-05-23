@@ -20,7 +20,7 @@ router.use("/cart",cart)
 
 router.use("/",(req,res)=>{
     res.json({
-        result:"this is not available",
+        result:{},
         messgae:"You have entered the wrong url",
         meta:null
     })

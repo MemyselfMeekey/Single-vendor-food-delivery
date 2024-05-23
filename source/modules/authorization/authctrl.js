@@ -386,7 +386,7 @@ class AuthorizationControl {
         await services.deleteAcessToken(token)
         res.status(200).json({
           result:token,
-          message:"LogOut successfully completed",
+          message:"Log Out has been successfull",
           meta:null
         })
       }
