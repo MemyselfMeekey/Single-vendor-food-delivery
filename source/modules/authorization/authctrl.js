@@ -425,28 +425,28 @@ class AuthorizationControl {
     }
   }
 
-	logOut = async (req, res, next) => {
-		try {
-			//Once run this by  sir
-			let token = req.headers['authorization']
-			if (token) {
-				token = token.split(" ").pop()
-				await services.deleteAcessToken(token)
-				res.status(200).json({
-					result: token,
-					message: "LogOut successfully completed",
-					meta: null
-				})
-			}
-			else {
-				throw new AppError({ message: "Token has a problem", code: 401 })
-			}
-		}
-		catch (exception) {
-			console.log("exception in logout", exception)
-			next(exception)
-		}
-	}
+  logOut=async(req,res,next)=>{
+    try{
+      //Once run this by  sir
+      let token=req.headers['authorization']
+      if(token){
+        token=token.split(" ").pop()
+        await services.deleteAcessToken(token)
+        res.status(200).json({
+          result:token,
+          message:"Log Out has been successfull",
+          meta:null
+        })
+      }
+      else{
+        throw new AppError({message:"Token has a problem",code:401})
+      }
+    }
+    catch(exception){
+      console.log("exception in logout",exception)
+      next(exception)
+    }
+  }
 }
 const authCtrl = new AuthorizationControl()
 module.exports = authCtrl

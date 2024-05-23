@@ -55,6 +55,7 @@ class BannerService{
     }
     transformUpdateObject=async(data,oldBanner,authUserId)=>{
         try{    
+            console.log("oldBanner",oldBanner)
             let formattedData={
                 ...data
             }
@@ -65,17 +66,23 @@ class BannerService{
                 formattedData.image=oldBanner.image
             }
             formattedData.updatedBy=authUserId
+            console.log("Formatted Data",formattedData)
             return formattedData
         }
         catch(exception){
             throw exception
         }
     }
-    updateBan=async(id,data)=>{
+    updateBan=async(banner,data)=>{
         try{
-            const update=await BannerModel.findByIdAndUpdate(id,{
+            console.log("Updating Banner Data",data)
+            console.log("banner",banner._id)
+            const update=await BannerModel.findByIdAndUpdate(banner._id,{
                 $set:data
+            },{
+                new:true
             })
+            console.log("updated data",update)
             return update
         }
         catch(exception){

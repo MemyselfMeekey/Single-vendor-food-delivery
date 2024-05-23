@@ -115,10 +115,10 @@ class services{
                 subject:"RESETTING THE PASSWORD",
                 html:`
                 Dear <b> ${name}</b>,</br>
-                <p>You have requesten for the password change.</p><br>
+                <p>You have requested for the password change.</p><br>
                 <p>if this is your request please click the link below, or ignore the request</p>
                 <p>Your account has been registered successfully. Please click the link below to activate your account or copy psatethe url</p>
-                <a href="${process.env.FRONTEND_URL}chaneg-password/${token}/verify">${process.env.FRONTEND_URL}chaneg-password/${token}/verify
+                <a href="${process.env.FRONTEND_URL}forgetpass/${token}/verification">${process.env.FRONTEND_URL}forgetpass/${token}/verification
                 </a><br>
                 <p>Your link is activated only for 2 hours</p>
                 <b> Regards</b>

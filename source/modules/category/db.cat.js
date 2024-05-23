@@ -23,7 +23,8 @@ const CategorySchema=new mongoose.Schema({
     },
     parentId:{
         type:mongoose.Types.ObjectId,
-        ref:"FDCategory"
+        ref:"FDCategory",
+        default:null
     },
    showInHome:{
     type:Boolean,

@@ -18,7 +18,7 @@ food.use((req,res,next)=>{
     next()
 })
 
-food.use("/images",express.static(".images/uploads"))
+food.use("/storedimages",express.static("./images/uploads"))
 
 food.use(express.json())
 food.use(express.urlencoded({
