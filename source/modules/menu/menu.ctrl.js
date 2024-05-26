@@ -87,7 +87,7 @@ class menuCtrl{
             if(!menu){
                 throw new AppError({message:"Menu Doesnot exists",code:400})
             }
-            const payload=await MenuSvc.tranformUpdateObject(req.body,menu,req.authUser._id)
+            const payload=await MenuSvc.tranformUpdateObject(req, menu, req.authUser._id)
             const updatedData=await MenuSvc.updateData(menu._id,payload)
             if(!updatedData){
                 throw new AppError({message:"Product cannot be updated",code:400})

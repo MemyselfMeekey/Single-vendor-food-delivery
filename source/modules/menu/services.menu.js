@@ -78,25 +78,37 @@ class MenuService {
             throw exception
         }
     }
-    tranformUpdateObject = async (data, oldMenu, authUserId) => {
+    tranformUpdateObject = async (req, oldMenu, authUserId) => {
         try {
             const formattedData = {
-                ...data
+                ...req.body
             }
-            formattedData.slug = slugify(data.name, { lower: true })
-            let images = oldMenu.images
-            if (data.images) {
-                images = data.images.map(image => image.filename)
-            }
+            formattedData.slug = slugify(req.body.name, { lower: true })
 
-            if (data.images) {
-                formattedData.images = images
+            let images = oldMenu.images
+
+            if(req.files) {
+                req.files.map((image) => {
+                    images.push(image.filename)
+                })
             }
-            else {
+            if(images) {
+                formattedData.images = images
+            } else {
                 formattedData.images = null
             }
-            formattedData.category = data.category || null
-            formattedData.afterDiscount = data.price - data.price * data.discount / 100
+            // if (data.images) {
+            //     images = data.images.map(image => image.filename)
+            // }
+
+            // if (data.images) {
+            //     formattedData.images = images
+            // }
+            // else {
+            //     formattedData.images = null
+            // }
+            formattedData.category = req.body.category || null
+            formattedData.afterDiscount = req.body.price - req.body.price * req.body.discount / 100
             formattedData.updatedBy = authUserId
             return formattedData
         }

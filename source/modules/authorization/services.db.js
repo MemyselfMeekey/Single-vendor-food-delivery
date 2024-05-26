@@ -63,6 +63,7 @@ class services{
         }
         catch(exception){
             console.log("This is an error in sendOtp services",exception)
+            process.exit()
             throw exception
         }
     }
