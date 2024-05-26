@@ -21,18 +21,6 @@ class AuthorizationControl {
 				throw AppError({ message: "this couldnot be executed in registration" })
 			}
 
-<<<<<<< HEAD
-			res.json({
-				result: user,
-				message: "Use the activation token to activate your account",
-				meta: null
-			})
-		}
-		catch (exception) {
-			console.log(exception)
-			next(exception)
-		}
-=======
       res.json({
         result: user,
         message: "Please check your provided email",
@@ -43,7 +31,6 @@ class AuthorizationControl {
       console.log(exception)
       next(exception)
     }
->>>>>>> 2c1ef586793d20dc1e341785c137790d50e3fbd2
 
 	}
 	verificationToken = async (req, res, next) => {
@@ -84,40 +71,6 @@ class AuthorizationControl {
 			const user = await services.getSingleUserByFilter({
 				email: email,
 
-<<<<<<< HEAD
-			})
-			if (!user) {
-				throw new AppError({ message: "User has not been registered yet " })
-			}
-			const token = genRanStr()
-
-			const expiryDate = new Date()
-			expiryDate.setHours(expiryDate.getHours() + 2)
-			await services.updateUser(user._id, {
-				activationToken: token,
-
-				expiryDate: expiryDate
-			})
-			const myEvent = req.myEvent
-			myEvent.emit('sendRegisterMail', { name: user.name, email: user.email, activationToken: token })
-			res.json({
-				result: {
-					activationToken: token,
-					expiryDate: expiryDate
-				},
-				message: "Please note your acgtivation token for activation and otp to login.",
-				meta: null
-			})
-		}
-		catch (exception) {
-			console.log("exeption in authroirzation control", exception)
-			next(exception)
-		}
-	}
-	activation = async (req, res, next) => {
-		try {
-			const token = req.params.token
-=======
       })
      
       if (!user) {
@@ -154,7 +107,6 @@ class AuthorizationControl {
   activation = async (req, res, next) => {
     try {
       const token = req.params.token
->>>>>>> 2c1ef586793d20dc1e341785c137790d50e3fbd2
 
 			const user = await services.getSingleUserByFilter({
 				activationToken: token,

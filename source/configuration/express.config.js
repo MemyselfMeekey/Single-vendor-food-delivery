@@ -9,8 +9,7 @@ food.use(cors())
 
 const myEvent=require("../../source/eventlistener/myevent.listener")
 const {MongooseError}=require('mongoose')
-const cors=require("cors")
-food.use(cors())
+
 
 
 food.use((req,res,next)=>{

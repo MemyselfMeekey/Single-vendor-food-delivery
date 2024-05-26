@@ -49,10 +49,11 @@ class CategoryService {
         try{
             console.log(offset,limit,filter)
             const data=await CatDB.find(filter)
-            .populate('createdBy',['_id','name','email'])//user table column
-            .sort({'_id':"desc"})
-            .skip(offset)
-            .limit(limit)
+                .populate('createdBy',['_id','name','email'])//user table column
+                .populate("parentId", ['name', "_id", "slug"])
+                .sort({'_id':"desc"})
+                .skip(offset)
+                .limit(limit)
             return data
         }
         catch(exception){
