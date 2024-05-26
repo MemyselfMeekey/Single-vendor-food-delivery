@@ -56,7 +56,7 @@ class MenuService {
         try {
             const data = await MenuDB.find(filter)
                 .populate('createdBy', ['_id', 'name', 'email'])
-                .populate('category', ['_id', 'name', 'slug'])
+                .populate('categories', ['_id', 'name', 'slug'])
                 .sort({ '_data': 'desc' })
                 .skip(offset)
                 .limit(limit)
@@ -71,7 +71,7 @@ class MenuService {
         try {
             const data = await MenuDB.findById(id)
                 .populate('createdBy', ['_id', 'name', 'email'])
-                .populate('category', ['_id', "name", 'slug'])
+                .populate('categories', ['_id', "name", 'slug'])
             return data
         }
         catch (exception) {
@@ -89,7 +89,7 @@ class MenuService {
                 images = data.images.map(image => image.filename)
             }
 
-            if (data.images.length >= 0) {
+            if (data.images) {
                 formattedData.images = images
             }
             else {

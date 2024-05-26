@@ -14,7 +14,7 @@ class menuCtrl{
                     payload:payload,
                     menu:menu
                 },
-                message:"This is menu",
+                message:"Menu has been created",
                 meta:null
             })
         }
@@ -87,7 +87,7 @@ class menuCtrl{
             if(!menu){
                 throw new AppError({message:"Menu Doesnot exists",code:400})
             }
-            const payload=MenuSvc.tranformUpdateObject(req.body,menu,req.authUser._id)
+            const payload=await MenuSvc.tranformUpdateObject(req.body,menu,req.authUser._id)
             const updatedData=await MenuSvc.updateData(menu._id,payload)
             if(!updatedData){
                 throw new AppError({message:"Product cannot be updated",code:400})
@@ -115,15 +115,15 @@ class menuCtrl{
             if(!menu){
                 throw new AppError({message:"MenuId doesnot exists",code:400})
             }
-            console.log(menu)
+           
             const deleteMenu=await MenuSvc.deleteById(menu._id)
            
-            if(deleteMenu.images.length){
+            if(deleteMenu.images){
                 deleteFile('.images/uploads/menu'+deleteMenu.images)
             }
             res.json({
                 result:deleteMenu.name,
-                message:"This id has been deleted",
+                message:"Menu has been deleted",
                 meta:null
             })
         }

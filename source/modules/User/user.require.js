@@ -4,7 +4,7 @@ const UserCreateDto=joi.object({
     name:joi.string().min(2).max(50).required(),
     image:joi.object().required(),
     email:emailSchema,
-    role:joi.string().pattern(/^(admin|customer)$/).default("customer"),
+    role:joi.string().pattern(/^(customer)$/).default("customer"),
     phone:joi.number().min(10).required(),
     address:joi.object({
         shippingAddress:joi.object({
