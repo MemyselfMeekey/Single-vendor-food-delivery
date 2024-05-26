@@ -19,11 +19,11 @@ const MenuSchema=new mongoose.Schema({
         required:true,
         min:1
     },
-    category:{
+    categories:[{
         type:mongoose.Types.ObjectId,
         ref:"FDCategory",
         default:null
-    },
+    }],
     discount:{
         type:Number,
         min:0,

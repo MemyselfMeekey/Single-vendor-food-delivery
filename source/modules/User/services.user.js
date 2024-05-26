@@ -1,5 +1,6 @@
 
 const { UserModel } = require("../../database/db.mongoose")
+const AppError = require("../../exception/error.app")
 
 class UserService{
     getCount=async(filter)=>{
@@ -39,6 +40,19 @@ class UserService{
             data.image=updateBody.image.filename
         }
         return data
+    }
+
+    deleteUser=async(id)=>{
+        try{
+            const deletedUser=await UserModel.findByIdAndDelete(id)
+            if(!deletedUser){
+                throw new AppError({message:"User couldnot be deleted",code:404})
+            }
+            return deletedUser
+        }
+        catch(exception){
+            throw exception
+        } 
     }
 }
 const UserSvc=new UserService()

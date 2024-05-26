@@ -4,7 +4,7 @@ const {UserModel,PatModel} = require("../../database/db.mongoose")
 const AppError = require("../../exception/error.app")
 const Mailing = require("../../services/mailing")
 class services{
-    transformRegisterData=(data)=>{
+    transformRegisterData=(data,createdBy)=>{
         try{
             data.status="inactive"
             const token=genRanStr()
@@ -13,7 +13,9 @@ class services{
 
             date.setHours(date.getHours()+3)
             data.expiryDate=date
-            
+
+            data.createdBy=createdBy
+
             return data
         }
         catch(exception){
@@ -64,10 +66,9 @@ class services{
             throw exception
         }
     }
-    userStore=async(data,authUser)=>{
+    userStore=async(data)=>{
         try{
             const user=new UserModel(data)
-            user.createdBy=authUser
             return await user.save()
         }
         catch(exception){

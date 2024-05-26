@@ -11,8 +11,8 @@ router.route("/")
     .get(loginCheck,rolePermission('admin'),MenuCtrl.index)
 router.route("/:itemId")
     .get(loginCheck,rolePermission('admin'),MenuCtrl.view)
-    .put(loginCheck,rolePermission('admin'),pathSet('/uploads/menu'),uploader.array('images'),bodyvalidator(MenuUpdateDto),MenuCtrl.update)
     .delete(loginCheck,rolePermission('admin'),MenuCtrl.delete)
+router.put('/:itemId/edit',loginCheck,rolePermission('admin'),pathSet('/uploads/menu'),uploader.array('images'),bodyvalidator(MenuUpdateDto),MenuCtrl.update)
 router.get("/home/list",loginCheck,MenuCtrl.homeList)
 
 module.exports=router

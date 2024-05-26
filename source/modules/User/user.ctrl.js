@@ -8,8 +8,8 @@ class UserControl{
         try{
             const body=req.body
             const createdBy=req.authUser._id
-            const transform= services.transformRegisterData(body)
-            const user=await services.userStore(body,createdBy)
+            const transform= services.transformRegisterData(body,req.authUser._id)
+            const user=await services.userStore(transform)
             if(user){
                 myEvent.emit('sendRegisterMail',user)
             }  
@@ -19,7 +19,7 @@ class UserControl{
             }
             res.json({
                 result:user,
-                message:"Your account has been created successfully",
+                message:"Account has been created successfully",
                 meta:null
             })
         }
@@ -115,17 +115,22 @@ class UserControl{
     deleteData=async(req,res,next)=>{
         try{
             const userId=req.params.userId
+            
             const userDetail=await UserSvc.getSingleUser({_id:userId})
             if(!userDetail){
                 throw new AppError({message:"user not found",code:400})
             }
-            const update=await services.updateUser(userId,{
-                deletedAt:new Date(),
-                deletedBy:req.authUser._id
-            })
+            const deleteUser=await UserSvc.deleteUser(userId)
+            if (deleteUser.image) {
+                deleteFile('./images/uploads/user' + deleteUser.image)
+            }
+            // const update=await services.updateUser(userId,{
+            //     deletedAt:new Date(),
+            //     deletedBy:req.authUser._id
+            // })
             res.json({
                 result:userDetail,
-                message:"This is deleted data",
+                message:"Successfully deleted",
                 meta:null
             })
         }

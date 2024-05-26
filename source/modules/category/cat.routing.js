@@ -13,8 +13,9 @@ router.route('/')
 .get(loginCheck,rolePermission('admin'),CatCtrl.index)
 router.route('/:id')
     .get(loginCheck,rolePermission('admin'),CatCtrl.view)
-    .put(loginCheck,rolePermission('admin'),pathSet('/uploads/cat'),uploader.single('image'),bodyvalidator(CatUpdateDto),CatCtrl.update)
-router.delete('/:id/edit',loginCheck,rolePermission('admin'),CatCtrl.delete)
+    .delete(loginCheck,rolePermission('admin'),CatCtrl.delete)
+
+router.put("/:id/edit",loginCheck,rolePermission('admin'),pathSet('/uploads/cat'),uploader.single('image'),bodyvalidator(CatUpdateDto),CatCtrl.update)
 
 router.get("/home/list",loginCheck,rolePermission('admin'),CatCtrl.homeList)
 router.get("/:slug/by-slug",CatCtrl.dataBySlug)

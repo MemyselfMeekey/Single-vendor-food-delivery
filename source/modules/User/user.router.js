@@ -11,8 +11,8 @@ router.route("/")
     .get(loginCheck,rolePermission('admin'),UserCtrl.getList)
 router.route("/:userId")
     .get(loginCheck,rolePermission('admin'),UserCtrl.getDataById)
-    .put(loginCheck,rolePermission('admin'),pathSet('/uploads/user'),uploader.single('image'),bodyvalidator(UserUpdateDto),UserCtrl.update)
+    
     .delete(loginCheck,rolePermission('admin'),UserCtrl.deleteData)
-
+router.put('/:userId/edit',loginCheck,rolePermission('admin'),pathSet('/uploads/user'),uploader.single('image'),bodyvalidator(UserUpdateDto),UserCtrl.update)
 
 module.exports=router

@@ -83,9 +83,9 @@ class CategoryControl {
             if (!cat) {
                 throw new AppError({ message: "No category was found ", code: 400 })
             }
-            console.log(cat)
+
             const payload = await CatSvc.transformUpdateObject(req.body, cat, req.authUser._id)
-           console.log(payload)
+          
             const updatedData = await CatSvc.updateData(cat._id, payload)
             
             if(!updatedData){
