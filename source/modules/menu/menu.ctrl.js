@@ -133,7 +133,7 @@ class menuCtrl{
     }
     homeList=async(req,res,next)=>{
         try{
-            const menulist=await CatSvc.getDataByFilter({
+            const menulist=await MenuSvc.getDataByFilter({
                 offset:0,
                 limit:(+req.query.limit ||5 ),
                 filter:{

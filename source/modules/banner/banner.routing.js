@@ -17,6 +17,6 @@ router.route("/:id")
    
 router.put("/:id/edit",loginCheck,rolePermission('admin'),pathSet('/uploads/banner'),uploader.single('image'),bodyvalidator(UpdateBanDto),BanCtrl.update)
  
-router.get("/home/list",loginCheck,rolePermission("admin"),BanCtrl.listforhome)
+router.get("/home/list",BanCtrl.listforhome)
 
 module.exports=router

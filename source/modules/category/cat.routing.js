@@ -17,6 +17,6 @@ router.route('/:id')
 
 router.put("/:id/edit",loginCheck,rolePermission('admin'),pathSet('/uploads/cat'),uploader.single('image'),bodyvalidator(CatUpdateDto),CatCtrl.update)
 
-router.get("/home/list",loginCheck,rolePermission('admin'),CatCtrl.homeList)
+router.get("/home/list",CatCtrl.homeList)
 router.get("/:slug/by-slug",CatCtrl.dataBySlug)
 module.exports=router

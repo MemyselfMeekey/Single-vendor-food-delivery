@@ -101,8 +101,8 @@ class OfferControl{
             throw new AppError({message:"This offer cannot be updated",code:400})
           }
           res.json({
-            result:updatedOffer.description,
-            messge:"This offer has been updated",
+            result:"",
+            messge:"Offer updated successfully",
             meta:null
           })
         }

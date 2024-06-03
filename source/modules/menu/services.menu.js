@@ -85,14 +85,13 @@ class MenuService {
             }
             formattedData.slug = slugify(req.body.name, { lower: true })
 
-            let images = oldMenu.images
+     
 
-            if(req.files) {
-                req.files.map((image) => {
-                    images.push(image.filename)
-                })
+            let images = oldMenu.images
+            if(req.files.length>=0) {
+                images = req.body.images.map(image => image.filename);
             }
-            if(images) {
+            if(images.length) {
                 formattedData.images = images
             } else {
                 formattedData.images = null

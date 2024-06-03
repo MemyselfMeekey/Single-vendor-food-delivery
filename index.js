@@ -9,6 +9,7 @@ httpServ.listen(4005,'127.0.0.1',(err)=>{
         console.log("Server is finally running")
     }
     else{
-        console.log(err)
+       
+        console.log("err",err)
     }
 })

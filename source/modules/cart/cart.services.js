@@ -81,6 +81,8 @@ class CartServices {
     getCartList = async (filter) => {
         try {            
             const cartObj = await CartDB.find(filter)
+            .populate('createdBy',['_id','name','phone','email'])
+            .populate('buyerId',['_id','name','phone','email'])
             return cartObj
         }
         catch (exception) {

@@ -37,7 +37,7 @@ class OfferService{
         try{
          
             const menuItems= await MenuDB.find({_id:{$in:menuId}})//search menu according to id as it is in array
-          
+            // .populate('menu.menuId',['_id','name','slug'])
             return menuItems
         }
         catch(exception){
@@ -89,6 +89,7 @@ class OfferService{
         try{
             const offer=await OfferDB.find(filter)
             .populate('createdBy',['_id','name','email'])
+            .populate('menu.menuId',['_id','name','slug'])
             .sort({'_data':"desc"})
             .skip(offset)
             .limit(limit)
@@ -98,6 +99,7 @@ class OfferService{
             throw exception
         }
     }
+
     getDataById=async(id)=>{
         try{
             const data=await OfferDB.findById(id)
@@ -109,9 +111,13 @@ class OfferService{
     }
     updateOffer=async(id,data)=>{
         try{
+            console.log("data going",data)
             const update=await OfferDB.findByIdAndUpdate(id,{
                 $set:data
+            },{
+                new:true
             })
+            console.log("data updating",update)
             return update
         }    
         catch(exception){

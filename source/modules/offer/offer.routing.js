@@ -10,8 +10,8 @@ router.route('/')
     .get(loginCheck,rolePermission("admin"),OfferCtrl.index)
 router.route('/:id')
     .get(loginCheck,rolePermission('admin'),OfferCtrl.view)
-    .put(loginCheck,rolePermission('admin'),bodyvalidator(OfferUpdateDto),OfferCtrl.updateOffer)
     .delete(loginCheck,rolePermission('admin'),OfferCtrl.deleteOffer)
-router.get("/home/list",loginCheck,rolePermission('admin'),OfferCtrl.listForHome)
+router.put('/:id/edit',loginCheck,rolePermission('admin'),bodyvalidator(OfferUpdateDto),OfferCtrl.updateOffer)
+router.get("/home/list",OfferCtrl.listForHome)
 
 module.exports=router

@@ -1,6 +1,5 @@
 require("dotenv").config()
 const nodemailer=require("nodemailer")
-const smtpTransport = require("nodemailer-smtp-transport")
 class Mailing{
     #transporter
     constructor(){
